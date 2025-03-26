@@ -27,6 +27,9 @@ const contactSchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
-const Contact_Model = model('Contact', contactSchema);
+// Database name: contacts
+// Collection name: allcontacts
+
+const Contact_Model = model('allcontacts', contactSchema);
 
 export default Contact_Model;
