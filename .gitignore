@@ -1,0 +1,10 @@
+//.gitignore
+
+/node_modules
+
+.env
+
+.vscode
+.cursor
+.DS_Store
+.idea
