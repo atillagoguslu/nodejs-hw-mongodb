@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-proje-baslatma",
+  "name": "nodejs-hw-mongodb",
   "version": "1.1.0",
   "description": "Yüklü mü?\r node --version",
   "type": "module",
@@ -9,7 +9,6 @@
     "dev": "nodemon src/index.js",
     "lint": "eslint src/**/*.js",
     "format": "prettier --write src/**/*.js"
-
   },
   "keywords": [],
   "author": "Atilla Göğüslü <atillagoguslu@gmail.com>",
@@ -19,5 +18,11 @@
     "eslint": "^9.22.0",
     "globals": "^16.0.0",
     "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "mongoose": "^8.13.0",
+    "pino-http": "^10.4.0"
   }
 }
