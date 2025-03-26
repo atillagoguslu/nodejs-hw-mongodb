@@ -25,7 +25,15 @@ const fetchContactById = async (req, res) => {
   try {
     console.log('(Controller) Fetching contact by id...');
     const contact = await getContactById(req.params.id);
-    console.log('(Controller) Fetching contact by id:', contact);
+
+    if (!contact) {
+      res.status(404).send({
+        status: 404,
+        message: 'Contact not found',
+        error: 'Contact not found',
+      });
+    }
+
     res.status(200).send({
       status: 200,
       message: `Successfully found contact with id ${req.params.id}!`,
