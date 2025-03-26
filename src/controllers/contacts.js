@@ -2,9 +2,7 @@ import { getAllContacts, getContactById } from '../services/contacts.js';
 
 const fetchAllContacts = async (req, res) => {
   try {
-    console.log('(Controller) Fetching all contacts...');
     const contacts = await getAllContacts();
-    console.log('(Controller) Fetching all contacts:', contacts);
 
     // Always return 200 status, even if contacts array is empty
     res.status(200).send({
@@ -23,7 +21,6 @@ const fetchAllContacts = async (req, res) => {
 
 const fetchContactById = async (req, res) => {
   try {
-    console.log('(Controller) Fetching contact by id...');
     const contact = await getContactById(req.params.id);
 
     if (!contact) {
