@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { pinoHttp } from 'pino-http';
-import { fetchAllContacts, fetchContactById } from './controllers/contacts.js';
+import homeRouter from './routers/home.js';
+import contactsRouter from './routers/contacts.js';
 
 const setupServer = () => {
   const app = express();
@@ -10,23 +11,15 @@ const setupServer = () => {
   app.use(express.json());
   app.use(pinoHttp());
 
-  // All Routes below are for testing purposes ------------------
-  app.get('/', (req, res) => {
-    res.send({
-      status: 200,
-      message: 'Hello World',
-      data: {},
-    });
-  });
-
-  app.get('/contacts', fetchAllContacts);
-  app.get('/contacts/:id', fetchContactById);
+  // All Routes are below ---------------------------------------
+  app.use('/', homeRouter);
+  app.use('/contacts', contactsRouter);
   // ------------------------------------------------------------
 
   app.use('*', (req, res) => {
     res.status(404).send({
       status: 404,
-      message: 'Not found',
+      message: 'Not found (Endpoint does not exist)',
       data: {},
     });
   });
