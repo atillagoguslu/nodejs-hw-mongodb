@@ -1,4 +1,5 @@
 import { getAllContacts, getContactById } from '../services/contacts.js';
+import notFoundHandler from '../middlewares/notFoundHandler.js'; 
 
 const fetchAllContacts = async (req, res) => {
   const contacts = await getAllContacts();
@@ -13,11 +14,7 @@ const fetchAllContacts = async (req, res) => {
 const fetchContactById = async (req, res) => {
   const contact = await getContactById(req.params.id);
   if (!contact) {
-    res.status(404).send({
-      status: 404,
-      message: 'Contact not found',
-      error: 'Contact not found',
-    });
+    notFoundHandler(req, res);
   }
 
   res.status(200).send({
