@@ -27,4 +27,31 @@ const getContactById = async (id) => {
   }
 };
 
-export { getAllContacts, getContactById };
+const createContactService = async (contact) => {
+  try {
+    const newContact = await Contact_Model.create(contact);
+    return newContact;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to create contact');
+  }
+};
+
+const updateContactService = async (id, contact) => {
+  try {
+    const updatedContact = await Contact_Model.findByIdAndUpdate(id, contact, { new: true });
+    return updatedContact;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to update contact');
+  }
+};
+
+const deleteContactService = async (id) => {
+  try {
+    const deletedContact = await Contact_Model.findByIdAndDelete(id);
+    return deletedContact;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to delete contact');
+  }
+};
+
+export { getAllContacts, getContactById, createContactService, updateContactService, deleteContactService };
