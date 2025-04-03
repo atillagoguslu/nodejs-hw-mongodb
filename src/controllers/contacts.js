@@ -1,5 +1,5 @@
 import { getAllContacts, getContactById } from '../services/contacts.js';
-import notFoundHandler from '../middlewares/notFoundHandler.js'; 
+import notFoundContactHandler from '../middlewares/notFoundcontactHandler.js';
 
 const fetchAllContacts = async (req, res) => {
   const contacts = await getAllContacts();
@@ -14,7 +14,7 @@ const fetchAllContacts = async (req, res) => {
 const fetchContactById = async (req, res) => {
   const contact = await getContactById(req.params.id);
   if (!contact) {
-    notFoundHandler(req, res);
+    notFoundContactHandler(req, res);
   }
 
   res.status(200).send({
