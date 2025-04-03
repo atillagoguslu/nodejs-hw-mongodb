@@ -1,8 +1,8 @@
 import { Router } from "express";
 
-const homeRouter = Router();
+const rootRouter = Router();
 
-homeRouter.get("/", (req, res) => {
+rootRouter.get("/", (req, res) => {
   res.status(200).json({
     status: 200,
     message: "Hello World",
@@ -10,4 +10,4 @@ homeRouter.get("/", (req, res) => {
   });
 });
 
-export default homeRouter;
+export default rootRouter;

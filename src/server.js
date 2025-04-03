@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import { pinoHttp } from 'pino-http';
-import homeRouter from './routers/home.js';
+import rootRouter from './routers/root.js';
 import contactsRouter from './routers/contacts.js';
-
+import errorHandler from './middlewares/errorHandler.js';
 const setupServer = () => {
   const app = express();
 
@@ -12,7 +12,7 @@ const setupServer = () => {
   app.use(pinoHttp());
 
   // All Routes are below ---------------------------------------
-  app.use('/', homeRouter);
+  app.use('/', rootRouter);
   app.use('/contacts', contactsRouter);
   // ------------------------------------------------------------
 
@@ -23,6 +23,9 @@ const setupServer = () => {
       data: {},
     });
   });
+
+  // eslint-disable-next-line no-unused-vars
+  app.use(errorHandler);
 
   app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
