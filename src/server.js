@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { pinoHttp } from 'pino-http';
+import pinoPretty from 'pino-pretty';
 import rootRouter from './routers/root.js';
 import contactsRouter from './routers/contacts.js';
 import errorHandler from './middlewares/errorHandler.js';
@@ -12,7 +13,16 @@ const setupServer = () => {
   const app = express();
   app.use(cors());
   app.use(express.json());
-  app.use(pinoHttp());
+  app.use(
+    pinoHttp({
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+        },
+      },
+    }),
+  );
   // ----------------------------------- All Routes are below ---
   app.use('/', rootRouter);
   app.use('/contacts', contactsRouter);
