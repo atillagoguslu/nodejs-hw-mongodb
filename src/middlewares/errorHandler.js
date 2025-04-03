@@ -8,12 +8,13 @@ const errorHandler = (err, req, res, next) => {
       message: err.message,
       data: {},
     });
+  } else {
+    res.status(500).send({
+      status: 500,
+      message: '500 Internal Server Error',
+      data: {},
+    });
   }
-  res.status(500).send({
-    status: 500,
-    message: '500 Internal Server Error',
-    data: {},
-  });
 };
 
 export default errorHandler;

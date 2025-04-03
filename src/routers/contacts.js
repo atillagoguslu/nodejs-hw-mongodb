@@ -12,10 +12,10 @@ const contactsRouter = Router();
 
 // Starts with /contacts endpoint
 contactsRouter.get('/', ctrlWrapper(fetchAllContacts));
-contactsRouter.get('/:id', ctrlWrapper(fetchContactById));
+contactsRouter.get('/:contactID', ctrlWrapper(fetchContactById));
 
 contactsRouter.post('/', ctrlWrapper(createContact));
-contactsRouter.put('/:id', ctrlWrapper(updateContact));
-contactsRouter.delete('/:id', ctrlWrapper(deleteContact));
+contactsRouter.patch('/:contactID', ctrlWrapper(updateContact));
+contactsRouter.delete('/:contactID', ctrlWrapper(deleteContact));
 
 export default contactsRouter;

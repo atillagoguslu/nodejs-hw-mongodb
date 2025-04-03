@@ -1,5 +1,5 @@
 import Contact_Model from '../db/models/contact.js';
-
+import createHttpError from 'http-errors';
 const getAllContacts = async () => {
   const contacts = await Contact_Model.find();
   if (!contacts) {
@@ -9,6 +9,7 @@ const getAllContacts = async () => {
 };
 
 const getContactById = async (id) => {
+  console.log('getContactById:', id);
   const contact = await Contact_Model.findById(id);
   return contact;
 };
@@ -18,13 +19,19 @@ const createContactService = async (contact) => {
   return newContact;
 };
 
-const updateContactService = async (id, contact) => {
-  const updatedContact = await Contact_Model.findByIdAndUpdate(id, contact, { new: true });
+const updateContactService = async (contactID, newFields, options = { upsert: false }) => {
+  const updatedContact = await Contact_Model.findOneAndUpdate({ _id: contactID }, newFields, {
+    new: true,
+    ...options,
+  });
   return updatedContact;
 };
 
-const deleteContactService = async (id) => {
-  const deletedContact = await Contact_Model.findByIdAndDelete(id);
+const deleteContactService = async (contactID) => {
+  const deletedContact = await Contact_Model.findOneAndDelete({ _id: contactID }, { new: true });
+  if (!deletedContact) {
+    throw createHttpError(404, 'Contact not found');
+  }
   return deletedContact;
 };
 
