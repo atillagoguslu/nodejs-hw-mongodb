@@ -1,5 +1,11 @@
-import { getAllContacts, getContactById, createContactService, updateContactService, deleteContactService } from '../services/contacts.js';
-import { createHttpError } from 'http-errors';
+import {
+  getAllContacts,
+  getContactById,
+  createContactService,
+  updateContactService,
+  deleteContactService,
+} from '../services/contacts.js';
+import createHttpError from 'http-errors';
 
 const fetchAllContacts = async (req, res) => {
   const contacts = await getAllContacts();
@@ -40,7 +46,7 @@ const updateContact = async (req, res) => {
     message: 'Successfully updated contact!',
     data: contact,
   });
-};  
+};
 
 const deleteContact = async (req, res) => {
   const contact = await deleteContactService(req.params.id);
