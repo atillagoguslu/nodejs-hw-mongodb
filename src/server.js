@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import { pinoHttp } from 'pino-http';
-import pinoPretty from 'pino-pretty';
 import rootRouter from './routers/root.js';
 import contactsRouter from './routers/contacts.js';
 import errorHandler from './middlewares/errorHandler.js';
