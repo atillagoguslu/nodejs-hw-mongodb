@@ -5,7 +5,8 @@ const validateBody = (schema) => async (req, res, next) => {
     await schema.validate(req.body, { abortEarly: false });
     next();
   } catch (error) {
-    next(createHttpError(400, error.message));
+    const validationError = createHttpError(400, error.message);
+    next(validationError);
   }
 };
 
