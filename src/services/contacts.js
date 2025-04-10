@@ -2,30 +2,31 @@ import Contact_Model from '../db/models/contact.js';
 import createHttpError from 'http-errors';
 import calculatePaginationData from '../utils/calculatePaginationData.js';
 import SORT_ORDER from '../constants/sortOrder.js';
-import FAVOURITE from '../constants/favourite.js';
-
-// All Mongoose methods and settings:
-// https://mongoosejs.com/docs/api.html
 
 const getAllContacts = async (
   page = 1,
   perPage = 10,
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
-  isFavourite = FAVOURITE.ALL,
+  isFavourite = undefined,
+  contactType = undefined,
 ) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
   let filter = {};
-  if (isFavourite === FAVOURITE.ALL || isFavourite === undefined) {
+  if (isFavourite === undefined) {
     filter = {};
   } else {
     filter = { isFavourite: isFavourite };
   }
 
-  console.log('Favourite in service:', FAVOURITE.ALL);
-  console.log('Filter in service:', filter);
+  if (contactType === undefined) {
+    filter = { ...filter };
+  } else {
+    filter = { ...filter, contactType: contactType };
+  }
+
   const contactsQuery = Contact_Model.find(filter);
 
   const [contactsCount, contacts] = await Promise.all([
