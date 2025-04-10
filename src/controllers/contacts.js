@@ -7,10 +7,12 @@ import {
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 import parsePaginationParams from '../utils/parsePaginationParams.js';
+import parseSortParams from '../utils/parseSortParams.js';
 
 const fetchAllContacts = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
-  const contacts = await getAllContacts(page, perPage);
+  const { sortOrder, sortBy } = parseSortParams(req.query);
+  const contacts = await getAllContacts(page, perPage, sortOrder, sortBy);
   // Always return 200 status, even if contacts array is empty
   res.status(200).send({
     status: 200,
@@ -45,7 +47,9 @@ const createContact = async (req, res) => {
 const updateContact = async (req, res) => {
   const { contactID } = req.params;
   const newFields = req.body;
-  const contact = await updateContactService(contactID, newFields, { upsert: false });
+  const contact = await updateContactService(contactID, newFields, {
+    upsert: false,
+  });
   res.status(200).send({
     status: 200,
     message: 'Successfully updated contact!',
@@ -54,8 +58,7 @@ const updateContact = async (req, res) => {
 };
 
 const deleteContact = async (req, res) => {
-  const contactID = req.params.contactID;
-  console.log('deleteContact:', contactID);
+  const contactID = req.params.contactID; 
   const contact = await deleteContactService(contactID);
   res.status(200).send({
     status: 200,
@@ -64,4 +67,10 @@ const deleteContact = async (req, res) => {
   });
 };
 
-export { fetchAllContacts, fetchContactById, createContact, updateContact, deleteContact };
+export {
+  fetchAllContacts,
+  fetchContactById,
+  createContact,
+  updateContact,
+  deleteContact,
+};
