@@ -1,12 +1,12 @@
-import { Router } from "express";
+import { Router } from 'express';
 
 const rootRouter = Router();
 
-rootRouter.get("/", (req, res) => {
+rootRouter.get('/', (req, res) => {
   res.status(200).json({
     status: 200,
-    message: "Hello World",
-    data: {},
+    message: 'Hello World',
+    data: { 'Your lovely URL': 'https://youtu.be/dQw4w9WgXcQ' },
   });
 });
 
