@@ -1,4 +1,5 @@
 import FAVOURITE from '../constants/favourite.js';
+import TYPES from '../constants/types.js';
 
 const isString = (value) => {
   return typeof value === 'string';
@@ -12,21 +13,32 @@ const isKnownValue = (value) => {
   );
 };
 
+const isKnownType = (value) => {
+  return (
+    value === TYPES.WORK || value === TYPES.HOME || value === TYPES.PERSONAL
+  );
+};
+
 const parseFilterParams = (query) => {
-  const { favourite } = query;
-  if (!favourite || !isString(favourite) || !isKnownValue(favourite)) {
-    return { isFavourite: FAVOURITE.ALL };
+  const { favourite, type } = query;
+
+  let isFavourite = FAVOURITE.ALL; // Default value
+  let contactType = TYPES.PERSONAL; // Default value
+
+  if (isString(favourite) && isKnownValue(favourite)) {
+    if (favourite === FAVOURITE.TRUE) {
+      isFavourite = true;
+    } else if (favourite === FAVOURITE.FALSE) {
+      isFavourite = false;
+    }
+    // If favourite === FAVOURITE.ALL, isFavourite remains FAVOURITE.ALL (default)
   }
-  if (favourite === FAVOURITE.TRUE) {
-    return { isFavourite: true };
+
+  if (isString(type) && isKnownType(type)) {
+    contactType = type;
   }
-  if (favourite === FAVOURITE.FALSE) {
-    return { isFavourite: false };
-  }
-  if (favourite === FAVOURITE.ALL) {
-    return { isFavourite: FAVOURITE.ALL };
-  }
-  return { isFavourite: FAVOURITE.ALL }; // Fallback
+
+  return { isFavourite, contactType };
 };
 
 export default parseFilterParams;
