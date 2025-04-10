@@ -28,7 +28,6 @@ const getAllContacts = async (
   console.log('Filter in service:', filter);
   const contactsQuery = Contact_Model.find(filter);
 
-  // We write this with Promise.all to not couses performance issues
   const [contactsCount, contacts] = await Promise.all([
     Contact_Model.find().merge(contactsQuery).countDocuments(),
     contactsQuery
