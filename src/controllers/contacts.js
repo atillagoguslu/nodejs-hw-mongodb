@@ -6,13 +6,15 @@ import {
   deleteContactService,
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
+import parsePaginationParams from '../utils/parsePaginationParams.js';
 
 const fetchAllContacts = async (req, res) => {
-  const contacts = await getAllContacts();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const contacts = await getAllContacts(page, perPage);
   // Always return 200 status, even if contacts array is empty
   res.status(200).send({
     status: 200,
-    message: 'Successfully found contacts!',
+    message: `Successfully found ${contacts.length} contacts!`,
     data: contacts,
   });
 };
