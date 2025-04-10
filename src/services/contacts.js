@@ -1,11 +1,25 @@
 import Contact_Model from '../db/models/contact.js';
 import createHttpError from 'http-errors';
-const getAllContacts = async () => {
-  const contacts = await Contact_Model.find();
+import calculatePaginationData from '../utils/calculatePaginationData.js';
+
+const getAllContacts = async (page, perPage) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
+
+  const contactsQuery = Contact_Model.find();
+  console.log('contactsQuery (Without await):', contactsQuery);
+  const contactsCount = await Contact_Model.find().merge(contactsQuery).countDocuments();
+  console.log('contactsCount (With await):', contactsCount);
+
+  const contacts = await contactsQuery.skip(skip).limit(limit).exec();
+  console.log('contacts (With await):', contacts);
+  const paginationData = calculatePaginationData(contactsCount, perPage, page);
+
   if (!contacts) {
     return [];
   }
-  return contacts;
+
+  return { data: contacts, pagination: paginationData };
 };
 
 const getContactById = async (id) => {
