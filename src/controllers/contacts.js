@@ -8,11 +8,19 @@ import {
 import createHttpError from 'http-errors';
 import parsePaginationParams from '../utils/parsePaginationParams.js';
 import parseSortParams from '../utils/parseSortParams.js';
+import parseFilterParams from '../utils/parseFilterParams.js';
 
 const fetchAllContacts = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortOrder, sortBy } = parseSortParams(req.query);
-  const contacts = await getAllContacts(page, perPage, sortOrder, sortBy);
+  const { isFavourite } = parseFilterParams(req.query);
+  const contacts = await getAllContacts(
+    page,
+    perPage,
+    sortOrder,
+    sortBy,
+    isFavourite,
+  );
   // Always return 200 status, even if contacts array is empty
   res.status(200).send({
     status: 200,
@@ -58,7 +66,7 @@ const updateContact = async (req, res) => {
 };
 
 const deleteContact = async (req, res) => {
-  const contactID = req.params.contactID; 
+  const contactID = req.params.contactID;
   const contact = await deleteContactService(contactID);
   res.status(200).send({
     status: 200,
