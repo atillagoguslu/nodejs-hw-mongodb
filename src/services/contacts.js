@@ -27,15 +27,16 @@ const getAllContacts = async (
   console.log('Favourite in service:', FAVOURITE.ALL);
   console.log('Filter in service:', filter);
   const contactsQuery = Contact_Model.find(filter);
-  const contactsCount = await Contact_Model.find()
-    .merge(contactsQuery)
-    .countDocuments();
 
-  const contacts = await contactsQuery
-    .skip(skip)
-    .limit(limit)
-    .sort({ [sortBy]: sortOrder })
-    .exec();
+  // We write this with Promise.all to not couses performance issues
+  const [contactsCount, contacts] = await Promise.all([
+    Contact_Model.find().merge(contactsQuery).countDocuments(),
+    contactsQuery
+      .skip(skip)
+      .limit(limit)
+      .sort({ [sortBy]: sortOrder })
+      .exec(),
+  ]);
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
 
   if (!contacts) {
