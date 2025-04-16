@@ -31,9 +31,9 @@ authSchema.methods.toJSON = function () {
   return userObject;
 };
 
-// Database name: auth
-// Collection name: users
+// Database name: contacts
+// Collection name: auth
 
-const Auth_Model = model('users', authSchema);
+const Auth_Model = model('auth', authSchema);
 
 export default Auth_Model;
