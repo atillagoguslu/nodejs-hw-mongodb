@@ -1,12 +1,11 @@
 import Contact_Model from '../db/models/contact.js';
 import createHttpError from 'http-errors';
 import calculatePaginationData from '../utils/calculatePaginationData.js';
-import SORT_ORDER from '../constants/sortOrder.js';
 
 const getAllContacts = async (
   page = 1,
   perPage = 10,
-  sortOrder = SORT_ORDER.ASC,
+  sortOrder = 'asc',
   sortBy = '_id',
   isFavourite = undefined,
   contactType = undefined,
