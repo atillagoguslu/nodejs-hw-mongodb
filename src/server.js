@@ -5,6 +5,7 @@ import rootRouter from './routers/root.js';
 import contactsRouter from './routers/contacts.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
+import authRouter from './routers/auth.js';
 
 const PORT = process.env.PORT;
 
@@ -25,6 +26,9 @@ const setupServer = () => {
   // ----------------------------------- All Routes are below ---
   app.use('/', rootRouter);
   app.use('/contacts', contactsRouter);
+
+  app.use('/auth', authRouter); 
+
   // ------------------------------------------------------------
   app.use('*', notFoundHandler);
   app.use(errorHandler);
