@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import User from '../db/models/auth.js';
+import { randomBytes } from 'node:crypto';
+import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
 
 const registerService = async (userData) => {
   const { name, email, password } = userData;
@@ -32,7 +34,21 @@ const loginService = async (email, password) => {
     throw createHttpError(401, 'Invalid credentials');
   }
 
-  return user;
+  //Buradan sonrası token oluşturma işlemi yapılacak
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+  const accessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
+  const refreshTokenValidUntil = new Date(Date.now() + ONE_DAY);
+
+  const session = await Session.create({
+    user: user._id,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil,
+    refreshTokenValidUntil,
+  });
+
+  return session;
 };
 
 export { registerService, loginService };
