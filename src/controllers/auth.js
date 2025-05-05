@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 
 const registerController = async (req, res) => {
   const { name, email, password } = req.body;
-  const user = await registerService(name, email, password);
+  const user = await registerService({ name, email, password });
 
   console.log('In Register Controller: User:', user);
   res.status(201).json({
@@ -19,7 +19,11 @@ const loginController = async (req, res) => {
   if (!user) {
     throw createHttpError(401, 'Invalid credentials');
   }
-  res.status(200).json(user);
+  res.status(200).json({
+    status: 200,
+    message: 'User logged in successfully',
+    data: user,
+  });
 };
 
 export { registerController, loginController };
