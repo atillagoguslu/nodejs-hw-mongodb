@@ -1,11 +1,16 @@
 import { registerService, loginService } from '../services/auth.js';
 import createHttpError from 'http-errors';
 
-
 const registerController = async (req, res) => {
   const { name, email, password } = req.body;
   const user = await registerService(name, email, password);
-  res.status(201).json(user);
+
+  console.log('In Register Controller: User:', user);
+  res.status(201).json({
+    status: 201,
+    message: 'User registered successfully',
+    data: user,
+  });
 };
 
 const loginController = async (req, res) => {
