@@ -67,4 +67,8 @@ const loginService = async (email, password) => {
   return newSession;
 };
 
-export { registerService, loginService };
+const logoutService = async (sessionID) => {
+  await Sessions.findByIdAndDelete(sessionID);
+};
+
+export { registerService, loginService, logoutService };
