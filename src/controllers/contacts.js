@@ -15,8 +15,8 @@ const fetchAllContacts = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortOrder, sortBy } = parseSortParams(req.query);
   const { isFavourite, contactType } = parseFilterParams(req.query);
-  console.log('IN CONTACTS CONTROLLER contactType:', contactType);
-  const allContacts = await getAllContacts(page, perPage, sortOrder, sortBy, isFavourite, contactType);
+  const userId = req.userID;
+  const allContacts = await getAllContacts(userId, page, perPage, sortOrder, sortBy, isFavourite, contactType);
   // Always return 200 status, even if contacts array is empty
   res.status(200).send({
     status: 200,
@@ -27,7 +27,8 @@ const fetchAllContacts = async (req, res) => {
 
 const fetchContactById = async (req, res) => {
   const contactID = req.params.contactID;
-  const contact = await getContactById(contactID);
+  const userId = req.userID;
+  const contact = await getContactById(contactID, userId);
   if (!contact) {
     throw createHttpError(404, 'Contact not found');
   }
@@ -52,7 +53,8 @@ const createContact = async (req, res) => {
 const updateContact = async (req, res) => {
   const { contactID } = req.params;
   const newFields = req.body;
-  const contact = await updateContactService(contactID, newFields, {
+  const userId = req.userID;
+  const contact = await updateContactService(contactID, userId, newFields, {
     upsert: false,
   });
   res.status(200).send({
@@ -64,7 +66,8 @@ const updateContact = async (req, res) => {
 
 const deleteContact = async (req, res) => {
   const contactID = req.params.contactID;
-  const contact = await deleteContactService(contactID);
+  const userId = req.userID;
+  const contact = await deleteContactService(contactID, userId);
   res.status(200).send({
     status: 200,
     message: 'Successfully deleted contact!',
