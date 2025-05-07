@@ -52,10 +52,13 @@ const loginService = async (email, password) => {
 };
 
 const logoutService = async (sessionID) => {
-  const session = await Sessions.findByIdAndDelete(sessionID);
-  if (!session) {
+  console.log('In Logout Service: Session ID:', sessionID);
+  const closedSession = await Sessions.findByIdAndDelete(sessionID);
+  console.log('In Logout Service: Closed Session:', closedSession);
+  if (!closedSession) {
     throw createHttpError(401, 'Invalid session ID');
   }
+  return closedSession;
 };
 
 const refreshService = async (sessionID) => {

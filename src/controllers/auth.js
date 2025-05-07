@@ -39,7 +39,9 @@ const loginController = async (req, res) => {
 
 const logoutController = async (req, res) => {
   const { sessionID } = req.cookies;
-  await logoutService(sessionID);
+  console.log('In Logout Controller: User ID:', sessionID);
+  const closedSession = await logoutService(sessionID);
+  console.log('In Logout Controller: Session:', closedSession);
   res.clearCookie('refreshToken');
   res.clearCookie('sessionID');
   res.status(204).json({
