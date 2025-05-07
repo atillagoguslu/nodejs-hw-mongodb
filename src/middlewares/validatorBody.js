@@ -8,10 +8,8 @@ const validateBody = (schema) => async (req, res, next) => {
 
   try {
     await schema.validate(req.body, { abortEarly: false });
-    console.log('In Validate Body Middleware: Validated Body:', req.body);
     next();
   } catch (error) {
-    console.log('In Validate Body Middleware: Error:', error);
     const validationError = createHttpError(400, error.message);
     next(validationError);
   }

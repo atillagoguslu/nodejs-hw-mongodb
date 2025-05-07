@@ -29,14 +29,12 @@ const addRandomContacts = async (count) => {
 
     await new Promise((resolve, reject) => {
       const req = http.request(options, (res) => {
-        console.log(`Sending contact ${i + 1}: Status Code: ${res.statusCode}`);
         let responseBody = '';
         res.on('data', (chunk) => {
           responseBody += chunk;
         });
         res.on('end', () => {
           if (res.statusCode >= 200 && res.statusCode < 300) {
-            console.log(`Contact ${i + 1} sent successfully. Response: ${responseBody}`);
             resolve();
           } else {
             console.error(`Failed to send contact ${i + 1}. Status: ${res.statusCode}, Response: ${responseBody}`);
@@ -56,7 +54,6 @@ const addRandomContacts = async (count) => {
       console.error(`Promise error for contact ${i + 1}:`, error.message);
     });
   }
-  console.log('\nFinished sending all contacts.');
 };
 
 addRandomContacts(25);

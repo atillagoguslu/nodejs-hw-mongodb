@@ -4,8 +4,6 @@ import createHttpError from 'http-errors';
 const registerController = async (req, res) => {
   const { name, email, password } = req.body;
   const user = await registerService({ name, email, password });
-
-  console.log('In Register Controller: User:', user);
   res.status(201).json({
     status: 201,
     message: 'User registered successfully',
@@ -25,7 +23,8 @@ const loginController = async (req, res) => {
     expires: user.refreshTokenValidUntil,
   });
 
-  res.cookie('sessionID', user._id, {
+  const sessionID = user._id.toString();
+  res.cookie('sessionID', sessionID, {
     httpOnly: true,
     expires: user.refreshTokenValidUntil,
   });
@@ -50,13 +49,13 @@ const logoutController = async (req, res) => {
 };
 
 const refreshController = async (req, res) => {
-  const { refreshToken, sessionID } = req.cookies;
-  const user = await refreshService({ refreshToken, sessionID });
+  const { sessionID } = req.cookies;
+  const user = await refreshService(sessionID);
   res.cookie('refreshToken', user.refreshToken, {
     httpOnly: true,
     expires: user.refreshTokenValidUntil,
   });
-  res.cookie('sessionID', sessionID, {
+  res.cookie('sessionID', user._id.toString(), {
     httpOnly: true,
     expires: user.refreshTokenValidUntil,
   });
