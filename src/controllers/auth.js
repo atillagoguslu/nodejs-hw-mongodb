@@ -21,7 +21,7 @@ const loginController = async (req, res) => {
   }
   res.status(200).json({
     status: 200,
-    message: 'User logged in successfully',
+    message: 'User logged in successfully and session created',
     data: user,
   });
 };
