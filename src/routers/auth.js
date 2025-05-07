@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { registerValidator, loginValidator } from '../validators/authValidator.js';
 import validateBody from '../middlewares/validatorBody.js';
-import { registerController, loginController } from '../controllers/auth.js';
+import { registerController, loginController, logoutController } from '../controllers/auth.js';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 
 const authRouter = Router();
@@ -14,5 +14,5 @@ authRouter.post('/', async (req, res) => {
 });
 authRouter.post('/register', validateBody(registerValidator), ctrlWrapper(registerController));
 authRouter.post('/login', validateBody(loginValidator), ctrlWrapper(loginController));
-
+authRouter.post('/logout', ctrlWrapper(logoutController));
 export default authRouter;
