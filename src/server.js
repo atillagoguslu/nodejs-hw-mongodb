@@ -16,16 +16,16 @@ const setupServer = () => {
   app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
-  // app.use(
-  //   pinoHttp({
-  //     transport: {
-  //       target: 'pino-pretty',
-  //       options: {
-  //         colorize: true,
-  //       },
-  //     },
-  //   }),
-  // );
+  app.use(
+    pinoHttp({
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+        },
+      },
+    }),
+  );
   // ----------------------------------- All Routes are below ---
   app.use('/', rootRouter);
   app.use('/contacts', contactsRouter);
