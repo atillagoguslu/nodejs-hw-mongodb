@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import User from '../db/models/auth.js';
+import Sessions from '../db/models/sessions.js';
 import { randomBytes } from 'node:crypto';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
 
@@ -40,15 +41,30 @@ const loginService = async (email, password) => {
   const accessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
   const refreshTokenValidUntil = new Date(Date.now() + ONE_DAY);
 
-  const session = await Session.create({
-    user: user._id,
+  console.log('In Login Service: User ID:', user._id);
+  console.log('In Login Service: Access Token:', accessToken);
+  console.log('In Login Service: Refresh Token:', refreshToken);
+  console.log('In Login Service: Access Token Valid Until:', accessTokenValidUntil);
+  console.log('In Login Service: Refresh Token Valid Until:', refreshTokenValidUntil);
+
+  const session = await Sessions.findOne({ userID: user._id });
+  if (session) {
+    console.log('In Login Service: Session found');
+    await Sessions.deleteOne({ _id: session._id });
+    console.log('In Login Service: Session deleted');
+  } else {
+    console.log('In Login Service: Session not found and will be created');
+  }
+
+  const newSession = await Sessions.create({
+    userID: user._id,
     accessToken,
     refreshToken,
     accessTokenValidUntil,
     refreshTokenValidUntil,
   });
-
-  return session;
+  console.log('In Login Service: New Session created');
+  return newSession;
 };
 
 export { registerService, loginService };
