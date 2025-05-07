@@ -23,7 +23,7 @@ const fetchAllContacts = async (req, res) => {
     message: `Successfully found ${allContacts.contacts.length} contacts!`,
     data: allContacts,
   });
-};
+}; 
 
 const fetchContactById = async (req, res) => {
   const contactID = req.params.contactID;
