@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { conBLUE, conGREEN, conRED } from '../constants/console_colors.js';
 
 dotenv.config();
 
@@ -15,11 +16,11 @@ const MONGODB_URI = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB
 
 const connectToMongoDB = async () => {
   try {
-    console.log('Connecting to MongoDB...');
+    console.info(conBLUE, 'Connecting to MongoDB...');
     await mongoose.connect(MONGODB_URI);
-    console.log('Mongo connection successfully established!');
+    console.info(conGREEN, 'Mongo connection successfully established!');
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
+    console.error(conRED, 'Error connecting to MongoDB:', error);
   }
 };
 

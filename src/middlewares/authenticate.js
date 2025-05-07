@@ -12,8 +12,7 @@ const authenticate = async (req, res, next) => {
     // we throw bad request
     throw createHttpError(400, 'Bad Request: Token is not provided');
   }
-  const session = await Session.findOne({ accessToken: token });
-  console.log('In Authenticate Middleware: Session:', session);
+  const session = await Session.findOne({ accessToken: token }); 
   if (!session) {
     throw createHttpError(401, 'Not authorized: No session found');
   }
