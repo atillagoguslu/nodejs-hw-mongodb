@@ -1,8 +1,7 @@
 const parseNumber = (number, defaultValue) => {
-  const isString = typeof number === 'string';
+  const typeOfNumberValue = typeof number;
 
-  if (!isString) {
-    console.error('parseNumber: number is not a string');
+  if (typeOfNumberValue !== 'string') {
     return defaultValue;
   }
 
@@ -10,13 +9,11 @@ const parseNumber = (number, defaultValue) => {
 
   // If the parsed number is NaN, return the default value
   if (Number.isNaN(parsedNumber)) {
-    console.error('parseNumber: number is NaN');
     return defaultValue;
   }
 
   // If the parsed number is negative, return the default value
   if (parsedNumber < 0) {
-    console.error('parseNumber: number is negative');
     return defaultValue;
   }
 
