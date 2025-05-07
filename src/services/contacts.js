@@ -4,6 +4,7 @@ import calculatePaginationData from '../utils/calculatePaginationData.js';
 import { conGREEN, conRED, conYELLOW } from '../constants/console_colors.js';
 
 const getAllContacts = async (
+  userId,
   page = 1,
   perPage = 10,
   sortOrder = 'asc',
@@ -14,17 +15,12 @@ const getAllContacts = async (
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  let filter = {};
-  if (isFavourite === undefined) {
-    filter = {};
-  } else {
-    filter = { isFavourite: isFavourite };
+  let filter = { userId };
+  if (isFavourite !== undefined) {
+    filter.isFavourite = isFavourite;
   }
-
-  if (contactType === undefined) {
-    filter = { ...filter };
-  } else {
-    filter = { ...filter, contactType: contactType };
+  if (contactType !== undefined) {
+    filter.contactType = contactType;
   }
 
   console.log('IN CONTACTS SERVICE filter:', filter);
@@ -48,8 +44,8 @@ const getAllContacts = async (
   return { contacts: contacts, pagination: paginationData };
 };
 
-const getContactById = async (id) => {
-  const contact = await Contact_Model.findById(id);
+const getContactById = async (id, userId) => {
+  const contact = await Contact_Model.findOne({ _id: id, userId });
   return contact;
 };
 
@@ -59,16 +55,16 @@ const createContactService = async (contact) => {
   return newContact;
 };
 
-const updateContactService = async (contactID, newFields, options = { upsert: false }) => {
-  const updatedContact = await Contact_Model.findOneAndUpdate({ _id: contactID }, newFields, {
+const updateContactService = async (contactID, userId, newFields, options = { upsert: false }) => {
+  const updatedContact = await Contact_Model.findOneAndUpdate({ _id: contactID, userId }, newFields, {
     new: true,
     ...options,
   });
   return updatedContact;
 };
 
-const deleteContactService = async (contactID) => {
-  const deletedContact = await Contact_Model.findOneAndDelete({ _id: contactID }, { new: true });
+const deleteContactService = async (contactID, userId) => {
+  const deletedContact = await Contact_Model.findOneAndDelete({ _id: contactID, userId }, { new: true });
   if (!deletedContact) {
     throw createHttpError(404, 'Contact not found');
   }
