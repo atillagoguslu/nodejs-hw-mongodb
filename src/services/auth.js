@@ -71,4 +71,41 @@ const logoutService = async (sessionID) => {
   await Sessions.findByIdAndDelete(sessionID);
 };
 
-export { registerService, loginService, logoutService };
+const refreshService = async ({ refreshToken, sessionID }) => {
+  const Session = await Sessions.findOne({ refreshToken, userID: sessionID });
+  if (!Session) {
+    throw createHttpError(401, 'Invalid refresh token');
+  }
+  if (Session.refreshTokenValidUntil < Date.now()) {
+    throw createHttpError(401, 'Refresh token expired');
+  }
+  //Buradan sonrası token oluşturma işlemi yapılacak
+  const newAccessToken = randomBytes(30).toString('base64');
+  const newRefreshToken = randomBytes(30).toString('base64');
+  const newAccessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
+  const newRefreshTokenValidUntil = new Date(Date.now() + ONE_DAY);
+
+  console.log('In Refresh Service: User ID:', Session.userID);
+  console.log('In Refresh Service: Access Token:', newAccessToken);
+  console.log('In Refresh Service: Refresh Token:', newRefreshToken);
+  console.log('In Refresh Service: Access Token Valid Until:', newAccessTokenValidUntil);
+  console.log('In Refresh Service: Refresh Token Valid Until:', newRefreshTokenValidUntil);
+
+  const oldSession = await Sessions.findOne({ userID: Session.userID });
+  if (oldSession) {
+    console.log('In Refresh Service: Session found');
+    await Sessions.deleteOne({ _id: oldSession._id });
+    console.log('In Refresh Service: Session deleted');
+  }
+
+  const newSession = await Sessions.create({
+    userID: Session.userID,
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+    accessTokenValidUntil: newAccessTokenValidUntil,
+    refreshTokenValidUntil: newRefreshTokenValidUntil,
+  });
+  console.log('In Refresh Service: New Session refreshed');
+  return newSession;
+};
+export { registerService, loginService, logoutService, refreshService };
