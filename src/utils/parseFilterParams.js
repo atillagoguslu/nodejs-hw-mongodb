@@ -6,24 +6,18 @@ const isString = (value) => {
 };
 
 const isKnownValue = (value) => {
-  return (
-    value === FAVOURITE.TRUE ||
-    value === FAVOURITE.FALSE ||
-    value === FAVOURITE.ALL
-  );
+  return value === FAVOURITE.TRUE || value === FAVOURITE.FALSE || value === FAVOURITE.ALL;
 };
 
 const isKnownType = (value) => {
-  return (
-    value === TYPES.WORK || value === TYPES.HOME || value === TYPES.PERSONAL
-  );
+  return value === TYPES.WORK || value === TYPES.HOME || value === TYPES.PERSONAL;
 };
 
 const parseFilterParams = (query) => {
   const { favourite, type } = query;
 
   let isFavourite = FAVOURITE.ALL; // Default value
-  let contactType = TYPES.PERSONAL; // Default value
+  let contactType = TYPES.ALL; // Default value
 
   if (isString(favourite) && isKnownValue(favourite)) {
     if (favourite === FAVOURITE.TRUE) {
