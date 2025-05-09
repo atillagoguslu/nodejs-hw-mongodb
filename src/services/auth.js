@@ -5,6 +5,7 @@ import Sessions from '../db/models/sessions.js';
 import { randomBytes } from 'node:crypto';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
 import sendMail from '../utils/sendMail.js';
+import JWT from 'jsonwebtoken';
 
 const registerService = async (userData) => {
   const { name, email, password } = userData;
@@ -98,21 +99,53 @@ const sendResetPasswordEmailService = async (email) => {
   if (!userForReset) {
     throw createHttpError(404, 'User not found');
   }
-
-  const verificationToken = '1234567890';
-
-  await sendMail({
-    from: `${process.env.BREVO_SMTP_FROM}`,
-    to: email,
-    subject: 'Reset Password',
-    html: `<h1>Reset Password</h1>
-    <p>Click the link below to reset your password</p>
-    <a href="${process.env.FRONTEND_URL}/auth/reset-password/${verificationToken}">Reset Password</a>
-    <p>This link will expire in 15 minutes</p>
-    <p>If you did not request a password reset, please ignore this email</p>`,
+  const resetToken = JWT.sign({ sub: userForReset._id, email: userForReset.email }, process.env.JWT_SECRET, {
+    expiresIn: '15m',
   });
 
-  return true;
+  const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
+  // await sendMail({
+  //   from: `${process.env.BREVO_SMTP_FROM}`,
+  //   to: userForReset.email,
+  //   subject: 'Reset Password',
+  //   html: `<h1>Reset Password</h1>
+  //   <p>Click the link below to reset your password</p>
+  //   <a href="${resetUrl}">Reset Password</a>
+    
+  //   <p>This link will expire in 15 minutes</p>
+  //   <p>If you did not request a password reset, please ignore this email</p>
+  //   <p>If not clickable, please copy and paste the link below to your browser: ${resetUrl}</p>`,
+  // });
+
+  return resetToken;
 };
 
-export { registerService, loginService, logoutService, refreshService, sendResetPasswordEmailService };
+const resetPasswordService = async (token, newPassword) => {
+  console.log('In Reset Password Service: Token:', token);
+  console.log('In Reset Password Service: New Password:', newPassword);
+  let decoded;
+  try {
+    decoded = JWT.verify(token, process.env.JWT_SECRET);
+    console.log('In Reset Password Service: Decoded:', decoded);
+  } catch (error) {
+    throw createHttpError(401, 'Invalid token');
+  }
+  const userToNewPassword = await User.findById(decoded.sub);
+  console.log('In Reset Password Service: User To New Password:', userToNewPassword);
+  if (!userToNewPassword) {
+    throw createHttpError(404, 'User not found');
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  console.log('In Reset Password Service: Hashed Password:', hashedPassword);
+  await User.findByIdAndUpdate(userToNewPassword._id, { password: hashedPassword });
+  return [];
+};
+
+export {
+  registerService,
+  loginService,
+  logoutService,
+  refreshService,
+  sendResetPasswordEmailService,
+  resetPasswordService,
+};

@@ -1,4 +1,11 @@
-import { registerService, loginService, logoutService, refreshService, sendResetPasswordEmailService } from '../services/auth.js';
+import {
+  registerService,
+  loginService,
+  logoutService,
+  refreshService,
+  sendResetPasswordEmailService,
+  resetPasswordService,
+} from '../services/auth.js';
 import createHttpError from 'http-errors';
 
 const registerController = async (req, res) => {
@@ -82,4 +89,27 @@ const sendResetPasswordEmailController = async (req, res) => {
   });
 };
 
-export { registerController, loginController, logoutController, refreshController, sendResetPasswordEmailController };
+const resetPasswordController = async (req, res) => {
+  console.log('In Reset Password Controller: Token:', req.body.token);
+  console.log('In Reset Password Controller: Password:', req.body.password);
+  const { token, password } = req.body;
+  const result = await resetPasswordService(token, password);
+  console.log('In Reset Password Controller: Result:', result);
+  if (!result) {
+    throw createHttpError(500, 'Failed to reset password');
+  }
+  res.status(200).json({
+    status: 200,
+    message: 'Password reset successfully',
+    data: result,
+  });
+};
+
+export {
+  registerController,
+  loginController,
+  logoutController,
+  refreshController,
+  sendResetPasswordEmailController,
+  resetPasswordController,
+};
