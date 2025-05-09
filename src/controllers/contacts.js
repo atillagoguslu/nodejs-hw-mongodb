@@ -58,8 +58,7 @@ const createContact = async (req, res) => {
   console.log('In createContact Controller: isFavourite:', newIsFavourite);
   console.log('In createContact Controller: contactType:', contactType);
   console.log('In createContact Controller: photoPath:', photoPath);
-  // const contact = await createContactService({ userId, name, phoneNumber, email, isFavourite, address, photo });
-  const contact = [];
+  const contact = await createContactService({ ...req.body, isFavourite: newIsFavourite, photo: photoPath, userId: userId });
   res.status(201).send({
     status: 201,
     message: 'Successfully created contact!',

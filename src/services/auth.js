@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 import User from '../db/models/auth.js';
 import Sessions from '../db/models/sessions.js';
 import { randomBytes } from 'node:crypto';
-import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
+import { THIRTY_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
 import sendMail from '../utils/sendMail.js';
 import JWT from 'jsonwebtoken';
 import path from 'node:path';
@@ -38,7 +38,7 @@ const loginService = async (email, password) => {
   //Buradan sonrası token oluşturma işlemi yapılacak
   const accessToken = randomBytes(30).toString('hex');
   const refreshToken = randomBytes(30).toString('hex');
-  const accessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
+  const accessTokenValidUntil = new Date(Date.now() + THIRTY_MINUTES);
   const refreshTokenValidUntil = new Date(Date.now() + ONE_DAY);
 
   const session = await Sessions.findOne({ userID: user._id });
@@ -75,7 +75,7 @@ const refreshService = async (sessionID) => {
   //Buradan sonrası token oluşturma işlemi yapılacak
   const newAccessToken = randomBytes(30).toString('hex');
   const newRefreshToken = randomBytes(30).toString('hex');
-  const newAccessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
+  const newAccessTokenValidUntil = new Date(Date.now() + THIRTY_MINUTES);
   const newRefreshTokenValidUntil = new Date(Date.now() + ONE_DAY);
 
   const oldSession = await Sessions.findOne({ userID: Session.userID });

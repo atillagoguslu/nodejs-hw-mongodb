@@ -16,7 +16,7 @@ contactsRouter.post(
   '/',
   generalWrapper(authenticate),
   multerMiddleware.single('photo'),
-  // validateBody(addContactSchema),
+  validateBody(addContactSchema),
   ctrlWrapper(createContact),
 );
 contactsRouter.get('/:contactID', generalWrapper(authenticate), isValidId, ctrlWrapper(fetchContactById));

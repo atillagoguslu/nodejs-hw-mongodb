@@ -8,6 +8,7 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 import authRouter from './routers/auth.js';
 import cookieParser from 'cookie-parser';
 import { conBLUE } from './constants/console_colors.js';
+import { UPLOAD_FOLDER } from './constants/uploads.js';
 
 const PORT = process.env.PORT;
 
@@ -26,6 +27,10 @@ const setupServer = () => {
   //     },
   //   }),
   // );
+
+  // Serve static files from the uploads folder
+  app.use('/uploads', express.static(UPLOAD_FOLDER));
+
   // ----------------------------------- All Routes are below ---
   app.use('/', rootRouter);
   app.use('/contacts', contactsRouter);
