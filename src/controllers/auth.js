@@ -47,9 +47,7 @@ const loginController = async (req, res) => {
 
 const logoutController = async (req, res) => {
   const { sessionID } = req.cookies;
-  console.log('In Logout Controller: User ID:', sessionID);
-  const closedSession = await logoutService(sessionID);
-  console.log('In Logout Controller: Session:', closedSession);
+  await logoutService(sessionID);
   res.clearCookie('refreshToken');
   res.clearCookie('sessionID');
   res.status(204).json({
@@ -78,7 +76,6 @@ const refreshController = async (req, res) => {
 
 const sendResetPasswordEmailController = async (req, res) => {
   const { email } = req.body;
-  console.log('In Send Reset Password Email Controller: Email:', email);
   const result = await sendResetPasswordEmailService(email);
   if (!result) {
     throw createHttpError(500, 'Failed to send reset password email');
@@ -91,11 +88,8 @@ const sendResetPasswordEmailController = async (req, res) => {
 };
 
 const resetPasswordController = async (req, res) => {
-  console.log('In Reset Password Controller: Token:', req.body.token);
-  console.log('In Reset Password Controller: Password:', req.body.password);
   const { token, password } = req.body;
   const result = await resetPasswordService(token, password);
-  console.log('In Reset Password Controller: Result:', result);
   if (!result) {
     throw createHttpError(500, 'Failed to reset password');
   }

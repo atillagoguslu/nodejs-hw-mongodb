@@ -7,6 +7,7 @@ import isValidId from '../middlewares/isValidId.js';
 import validateBody from '../middlewares/validatorBody.js';
 import { addContactSchema, updateContactSchema } from '../validators/contactsValidator.js';
 import multerMiddleware from '../middlewares/multer.js';
+
 const contactsRouter = Router();
 
 // Starts with /contacts endpoint ----------------------------------------------------------------------108

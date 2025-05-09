@@ -12,9 +12,9 @@ const sendMail = async (options) => {
 
   try {
     await transporter.verify();
-    console.log('SMTP connection successful');
+    console.info('SMTP connection successful');
   } catch (error) {
-    console.log('SMTP connection failed:', error);
+    console.error('SMTP connection failed:', error);
     throw new Error('SMTP connection failed');
   }
 

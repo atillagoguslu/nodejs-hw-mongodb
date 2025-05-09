@@ -57,9 +57,7 @@ const loginService = async (email, password) => {
 };
 
 const logoutService = async (sessionID) => {
-  console.log('In Logout Service: Session ID:', sessionID);
   const closedSession = await Sessions.findByIdAndDelete(sessionID);
-  console.log('In Logout Service: Closed Session:', closedSession);
   if (!closedSession) {
     throw createHttpError(401, 'Invalid session ID');
   }
@@ -96,9 +94,7 @@ const refreshService = async (sessionID) => {
 };
 
 const sendResetPasswordEmailService = async (email) => {
-  console.log('In Send Reset Password Email Service: Email:', email);
   const userForReset = await User.findOne({ email });
-  console.log('In Send Reset Password Email Service: User For Reset:', userForReset);
   if (!userForReset) {
     throw createHttpError(404, 'User not found');
   }
@@ -126,23 +122,17 @@ const sendResetPasswordEmailService = async (email) => {
 };
 
 const resetPasswordService = async (token, newPassword) => {
-  console.log('In Reset Password Service: Token:', token);
-  console.log('In Reset Password Service: New Password:', newPassword);
   let decoded;
   try {
     decoded = JWT.verify(token, process.env.JWT_SECRET);
-    console.log('In Reset Password Service: Decoded:', decoded);
   } catch (error) {
-    console.log('In Reset Password Service: Error:', error);
     throw createHttpError(401, 'Invalid token: ' + error.message);
   }
   const userToNewPassword = await User.findById(decoded.sub);
-  console.log('In Reset Password Service: User To New Password:', userToNewPassword);
   if (!userToNewPassword) {
     throw createHttpError(404, 'User not found');
   }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
-  console.log('In Reset Password Service: Hashed Password:', hashedPassword);
   await User.findByIdAndUpdate(userToNewPassword._id, { password: hashedPassword });
   return [];
 };
@@ -153,8 +143,7 @@ const getResetPasswordWrongPathService = async (token) => {
   const template = fs.readFileSync(WRONG_PATH_TEMPLATE_PATH, 'utf8');
   const compiledTemplate = handlebars.compile(template.toString());
   const htmlContent = compiledTemplate({ token });
-  console.log('In Get Reset Password Wrong Path Service: HTML Content:', htmlContent);
-  return [];
+  return htmlContent;
 };
 
 export {
