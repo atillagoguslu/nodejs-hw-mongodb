@@ -12,14 +12,14 @@ const contactsRouter = Router();
 
 // Starts with /contacts endpoint ----------------------------------------------------------------------108
 contactsRouter.get('/', generalWrapper(authenticate), ctrlWrapper(fetchAllContacts));
-contactsRouter.get('/:contactID', generalWrapper(authenticate), isValidId, ctrlWrapper(fetchContactById));
 contactsRouter.post(
   '/',
   generalWrapper(authenticate),
   multerMiddleware.single('photo'),
-  validateBody(addContactSchema),
+  // validateBody(addContactSchema),
   ctrlWrapper(createContact),
 );
+contactsRouter.get('/:contactID', generalWrapper(authenticate), isValidId, ctrlWrapper(fetchContactById));
 contactsRouter.patch('/:contactID', generalWrapper(authenticate), isValidId, validateBody(updateContactSchema), ctrlWrapper(updateContact));
 contactsRouter.delete('/:contactID', generalWrapper(authenticate), isValidId, ctrlWrapper(deleteContact));
 contactsRouter.post('/delete-until', generalWrapper(authenticate), ctrlWrapper(deleteUntil));
