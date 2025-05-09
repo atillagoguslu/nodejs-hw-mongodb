@@ -1,12 +1,7 @@
 import { Router } from 'express';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 import validateBody from '../middlewares/validatorBody.js';
-import {
-  registerValidator,
-  loginValidator,
-  sendResetEmailValidator,
-  resetPasswordValidator,
-} from '../validators/authValidator.js';
+import { registerValidator, loginValidator, sendResetEmailValidator, resetPasswordValidator } from '../validators/authValidator.js';
 import {
   registerController,
   loginController,
@@ -24,11 +19,7 @@ authRouter.post('/register', validateBody(registerValidator), ctrlWrapper(regist
 authRouter.post('/login', validateBody(loginValidator), ctrlWrapper(loginController));
 authRouter.post('/logout', ctrlWrapper(logoutController));
 authRouter.post('/refresh', ctrlWrapper(refreshController));
-authRouter.post(
-  '/send-reset-email',
-  validateBody(sendResetEmailValidator),
-  ctrlWrapper(sendResetPasswordEmailController),
-);
+authRouter.post('/send-reset-email', validateBody(sendResetEmailValidator), ctrlWrapper(sendResetPasswordEmailController));
 authRouter.post('/reset-pwd', validateBody(resetPasswordValidator), ctrlWrapper(resetPasswordController));
 authRouter.get('/reset-pwd', ctrlWrapper(getResetPasswordWrongPathController));
 authRouter.post('/', async (req, res) => {

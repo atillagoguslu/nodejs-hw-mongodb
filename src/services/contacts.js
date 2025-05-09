@@ -75,10 +75,7 @@ const deleteUntilService = async (until) => {
   try {
     const total = await Contact_Model.countDocuments();
     if (total <= until) {
-      console.info(
-        conYELLOW,
-        `No contacts removed. Total contacts (${total}) is less than or equal to UNTIL (${until}).`,
-      );
+      console.info(conYELLOW, `No contacts removed. Total contacts (${total}) is less than or equal to UNTIL (${until}).`);
       return [];
     }
     // Find the _ids of the contacts to remove (the last ones, sorted by createdAt desc)
@@ -93,11 +90,4 @@ const deleteUntilService = async (until) => {
   }
 };
 
-export {
-  getAllContacts,
-  getContactById,
-  createContactService,
-  updateContactService,
-  deleteContactService,
-  deleteUntilService,
-};
+export { getAllContacts, getContactById, createContactService, updateContactService, deleteContactService, deleteUntilService };

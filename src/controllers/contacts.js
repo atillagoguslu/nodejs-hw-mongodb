@@ -16,15 +16,7 @@ const fetchAllContacts = async (req, res) => {
   const { sortOrder, sortBy } = parseSortParams(req.query);
   const { isFavourite, contactType } = parseFilterParams(req.query);
   const userId = req.userID;
-  const allContacts = await getAllContacts(
-    userId,
-    page,
-    perPage,
-    sortOrder,
-    sortBy,
-    isFavourite,
-    contactType,
-  );
+  const allContacts = await getAllContacts(userId, page, perPage, sortOrder, sortBy, isFavourite, contactType);
   // Always return 200 status, even if contacts array is empty
   res.status(200).send({
     status: 200,

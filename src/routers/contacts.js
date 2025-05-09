@@ -1,13 +1,6 @@
 import { Router } from 'express';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
-import {
-  fetchAllContacts,
-  fetchContactById,
-  createContact,
-  updateContact,
-  deleteContact,
-  deleteUntil,
-} from '../controllers/contacts.js';
+import { fetchAllContacts, fetchContactById, createContact, updateContact, deleteContact, deleteUntil } from '../controllers/contacts.js';
 import authenticate from '../middlewares/authenticate.js';
 import generalWrapper from '../utils/generalWrapper.js';
 import isValidId from '../middlewares/isValidId.js';
@@ -26,13 +19,7 @@ contactsRouter.post(
   validateBody(addContactSchema),
   ctrlWrapper(createContact),
 );
-contactsRouter.patch(
-  '/:contactID',
-  generalWrapper(authenticate),
-  isValidId,
-  validateBody(updateContactSchema),
-  ctrlWrapper(updateContact),
-);
+contactsRouter.patch('/:contactID', generalWrapper(authenticate), isValidId, validateBody(updateContactSchema), ctrlWrapper(updateContact));
 contactsRouter.delete('/:contactID', generalWrapper(authenticate), isValidId, ctrlWrapper(deleteContact));
 contactsRouter.post('/delete-until', generalWrapper(authenticate), ctrlWrapper(deleteUntil));
 
