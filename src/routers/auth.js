@@ -29,8 +29,8 @@ authRouter.post(
   validateBody(sendResetEmailValidator),
   ctrlWrapper(sendResetPasswordEmailController),
 );
-authRouter.post('/reset-password', validateBody(resetPasswordValidator), ctrlWrapper(resetPasswordController));
-authRouter.get('/reset-password', ctrlWrapper(getResetPasswordWrongPathController));
+authRouter.post('/reset-pwd', validateBody(resetPasswordValidator), ctrlWrapper(resetPasswordController));
+authRouter.get('/reset-pwd', ctrlWrapper(getResetPasswordWrongPathController));
 authRouter.post('/', async (req, res) => {
   res.status(200).json({
     message: 'This is Auth endpoint. Use /register or /login',

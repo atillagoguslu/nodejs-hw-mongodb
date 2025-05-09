@@ -107,7 +107,7 @@ const sendResetPasswordEmailService = async (email) => {
   });
 
   // Preparing the reset url
-  const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
+  const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-pwd?token=${resetToken}`;
   // Preparing the Handlebars template
   const TEMPLATE_DIR = path.join(process.cwd(), 'src', 'templates');
   const TEMPLATE_PATH = path.join(TEMPLATE_DIR, 'reset-mail.html');
