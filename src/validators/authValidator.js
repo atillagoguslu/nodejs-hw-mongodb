@@ -11,4 +11,12 @@ const loginValidator = Joi.object({
   password: Joi.string().min(6).max(30).required(),
 }).strict();
 
-export { registerValidator, loginValidator };
+const sendVerificationEmailValidator = Joi.object({
+  email: Joi.string().email().required(),
+}).strict();
+
+const sendResetPasswordEmailValidator = Joi.object({
+  email: Joi.string().email().required(),
+}).strict();
+
+export { registerValidator, loginValidator, sendVerificationEmailValidator, sendResetPasswordEmailValidator };

@@ -1,4 +1,4 @@
-import { registerService, loginService, logoutService, refreshService } from '../services/auth.js';
+import { registerService, loginService, logoutService, refreshService, sendResetPasswordEmailService } from '../services/auth.js';
 import createHttpError from 'http-errors';
 
 const registerController = async (req, res) => {
@@ -67,4 +67,19 @@ const refreshController = async (req, res) => {
     data: { accessToken: user.accessToken },
   });
 };
-export { registerController, loginController, logoutController, refreshController };
+
+const sendResetPasswordEmailController = async (req, res) => {
+  const { email } = req.body;
+  console.log('In Send Reset Password Email Controller: Email:', email);
+  const result = await sendResetPasswordEmailService(email);
+  if (!result) {
+    throw createHttpError(500, 'Failed to send reset password email');
+  }
+  res.status(200).json({
+    status: 200,
+    message: 'Reset password email sent successfully',
+    data: result,
+  });
+};
+
+export { registerController, loginController, logoutController, refreshController, sendResetPasswordEmailController };

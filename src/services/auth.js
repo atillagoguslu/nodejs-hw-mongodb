@@ -4,6 +4,7 @@ import User from '../db/models/auth.js';
 import Sessions from '../db/models/sessions.js';
 import { randomBytes } from 'node:crypto';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
+import sendMail from '../utils/sendMail.js';
 
 const registerService = async (userData) => {
   const { name, email, password } = userData;
@@ -89,4 +90,29 @@ const refreshService = async (sessionID) => {
   });
   return newSession;
 };
-export { registerService, loginService, logoutService, refreshService };
+
+const sendResetPasswordEmailService = async (email) => {
+  console.log('In Send Reset Password Email Service: Email:', email);
+  const userForReset = await User.findOne({ email });
+  console.log('In Send Reset Password Email Service: User For Reset:', userForReset);
+  if (!userForReset) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const verificationToken = '1234567890';
+
+  await sendMail({
+    from: `${process.env.BREVO_SMTP_FROM}`,
+    to: email,
+    subject: 'Reset Password',
+    html: `<h1>Reset Password</h1>
+    <p>Click the link below to reset your password</p>
+    <a href="${process.env.FRONTEND_URL}/auth/reset-password/${verificationToken}">Reset Password</a>
+    <p>This link will expire in 15 minutes</p>
+    <p>If you did not request a password reset, please ignore this email</p>`,
+  });
+
+  return true;
+};
+
+export { registerService, loginService, logoutService, refreshService, sendResetPasswordEmailService };
