@@ -128,11 +128,13 @@ const resetPasswordService = async (token, newPassword) => {
     decoded = JWT.verify(token, process.env.JWT_SECRET);
     console.log('In Reset Password Service: Decoded:', decoded);
   } catch (error) {
+    console.log('In Reset Password Service: Error:', error);
     throw createHttpError(401, 'Invalid token: ' + error.message);
   }
   const userToNewPassword = await User.findById(decoded.sub);
   console.log('In Reset Password Service: User To New Password:', userToNewPassword);
   if (!userToNewPassword) {
+
     throw createHttpError(404, 'User not found');
   }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
