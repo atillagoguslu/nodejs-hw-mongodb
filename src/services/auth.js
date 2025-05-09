@@ -104,18 +104,18 @@ const sendResetPasswordEmailService = async (email) => {
   });
 
   const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
-  // await sendMail({
-  //   from: `${process.env.BREVO_SMTP_FROM}`,
-  //   to: userForReset.email,
-  //   subject: 'Reset Password',
-  //   html: `<h1>Reset Password</h1>
-  //   <p>Click the link below to reset your password</p>
-  //   <a href="${resetUrl}">Reset Password</a>
+  await sendMail({
+    from: `${process.env.BREVO_SMTP_FROM}`,
+    to: userForReset.email,
+    subject: 'Reset Password',
+    html: `<h1>Reset Password</h1>
+    <p>Click the link below to reset your password</p>
+    <a href="${resetUrl}">Reset Password</a>
     
-  //   <p>This link will expire in 15 minutes</p>
-  //   <p>If you did not request a password reset, please ignore this email</p>
-  //   <p>If not clickable, please copy and paste the link below to your browser: ${resetUrl}</p>`,
-  // });
+    <p>This link will expire in 15 minutes</p>
+    <p>If you did not request a password reset, please ignore this email</p>
+    <p>If not clickable, please copy and paste the link below to your browser: ${resetUrl}</p>`,
+  });
 
   return resetToken;
 };
@@ -128,7 +128,7 @@ const resetPasswordService = async (token, newPassword) => {
     decoded = JWT.verify(token, process.env.JWT_SECRET);
     console.log('In Reset Password Service: Decoded:', decoded);
   } catch (error) {
-    throw createHttpError(401, 'Invalid token');
+    throw createHttpError(401, 'Invalid token: ' + error.message);
   }
   const userToNewPassword = await User.findById(decoded.sub);
   console.log('In Reset Password Service: User To New Password:', userToNewPassword);
