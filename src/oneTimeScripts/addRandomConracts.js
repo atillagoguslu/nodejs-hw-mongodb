@@ -37,7 +37,9 @@ const addRandomContacts = async (count) => {
           if (res.statusCode >= 200 && res.statusCode < 300) {
             resolve();
           } else {
-            console.error(`Failed to send contact ${i + 1}. Status: ${res.statusCode}, Response: ${responseBody}`);
+            console.error(
+              `Failed to send contact ${i + 1}. Status: ${res.statusCode}, Response: ${responseBody}`,
+            );
             reject(new Error(`Request failed with status code ${res.statusCode}`));
           }
         });

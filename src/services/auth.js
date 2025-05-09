@@ -102,9 +102,13 @@ const sendResetPasswordEmailService = async (email) => {
   if (!userForReset) {
     throw createHttpError(404, 'User not found');
   }
-  const resetToken = JWT.sign({ sub: userForReset._id, email: userForReset.email }, process.env.JWT_SECRET, {
-    expiresIn: '15m',
-  });
+  const resetToken = JWT.sign(
+    { sub: userForReset._id, email: userForReset.email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '15m',
+    },
+  );
 
   // Preparing the reset url
   const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-pwd?token=${resetToken}`;

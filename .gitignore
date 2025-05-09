@@ -10,3 +10,6 @@ project-*.md
 .cursor
 .DS_Store
 .idea
+
+temp
+uploads
