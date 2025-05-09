@@ -14,6 +14,7 @@ import {
   refreshController,
   sendResetPasswordEmailController,
   resetPasswordController,
+  getResetPasswordWrongPathController,
 } from '../controllers/auth.js';
 
 const authRouter = Router();
@@ -29,7 +30,7 @@ authRouter.post(
   ctrlWrapper(sendResetPasswordEmailController),
 );
 authRouter.post('/reset-password', validateBody(resetPasswordValidator), ctrlWrapper(resetPasswordController));
-
+authRouter.get('/reset-password', ctrlWrapper(getResetPasswordWrongPathController));
 authRouter.post('/', async (req, res) => {
   res.status(200).json({
     message: 'This is Auth endpoint. Use /register or /login',

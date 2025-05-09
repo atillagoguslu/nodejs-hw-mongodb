@@ -5,6 +5,7 @@ import {
   refreshService,
   sendResetPasswordEmailService,
   resetPasswordService,
+  getResetPasswordWrongPathService,
 } from '../services/auth.js';
 import createHttpError from 'http-errors';
 
@@ -105,6 +106,15 @@ const resetPasswordController = async (req, res) => {
   });
 };
 
+const getResetPasswordWrongPathController = async (req, res) => {
+  const { token } = req.query;
+  const html = await getResetPasswordWrongPathService(token);
+  if (!html) {
+    throw createHttpError(500, 'Failed to get reset password wrong path');
+  }
+  res.send(html);
+};
+
 export {
   registerController,
   loginController,
@@ -112,4 +122,5 @@ export {
   refreshController,
   sendResetPasswordEmailController,
   resetPasswordController,
+  getResetPasswordWrongPathController,
 };

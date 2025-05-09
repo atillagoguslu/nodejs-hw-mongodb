@@ -6,6 +6,9 @@ import { randomBytes } from 'node:crypto';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
 import sendMail from '../utils/sendMail.js';
 import JWT from 'jsonwebtoken';
+import path from 'node:path';
+import fs from 'node:fs';
+import handlebars from 'handlebars';
 
 const registerService = async (userData) => {
   const { name, email, password } = userData;
@@ -103,18 +106,20 @@ const sendResetPasswordEmailService = async (email) => {
     expiresIn: '15m',
   });
 
+  // Preparing the reset url
   const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
+  // Preparing the Handlebars template
+  const TEMPLATE_DIR = path.join(process.cwd(), 'src', 'templates');
+  const TEMPLATE_PATH = path.join(TEMPLATE_DIR, 'reset-mail.html');
+  const template = fs.readFileSync(TEMPLATE_PATH, 'utf8');
+  const compiledTemplate = handlebars.compile(template.toString());
+  const htmlContent = compiledTemplate({ name: userForReset.name, url: resetUrl });
+
   await sendMail({
     from: `${process.env.BREVO_SMTP_FROM}`,
     to: userForReset.email,
     subject: 'Reset Password',
-    html: `<h1>Reset Password</h1>
-    <p>Click the link below to reset your password</p>
-    <a href="${resetUrl}">Reset Password</a>
-    
-    <p>This link will expire in 15 minutes</p>
-    <p>If you did not request a password reset, please ignore this email</p>
-    <p>If not clickable, please copy and paste the link below to your browser: ${resetUrl}</p>`,
+    html: htmlContent,
   });
 
   return resetToken;
@@ -134,12 +139,21 @@ const resetPasswordService = async (token, newPassword) => {
   const userToNewPassword = await User.findById(decoded.sub);
   console.log('In Reset Password Service: User To New Password:', userToNewPassword);
   if (!userToNewPassword) {
-
     throw createHttpError(404, 'User not found');
   }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   console.log('In Reset Password Service: Hashed Password:', hashedPassword);
   await User.findByIdAndUpdate(userToNewPassword._id, { password: hashedPassword });
+  return [];
+};
+
+const getResetPasswordWrongPathService = async (token) => {
+  const TEMPLATE_DIR = path.join(process.cwd(), 'src', 'templates');
+  const WRONG_PATH_TEMPLATE_PATH = path.join(TEMPLATE_DIR, 'wrongPath.html');
+  const template = fs.readFileSync(WRONG_PATH_TEMPLATE_PATH, 'utf8');
+  const compiledTemplate = handlebars.compile(template.toString());
+  const htmlContent = compiledTemplate({ token });
+  console.log('In Get Reset Password Wrong Path Service: HTML Content:', htmlContent);
   return [];
 };
 
@@ -150,4 +164,5 @@ export {
   refreshService,
   sendResetPasswordEmailService,
   resetPasswordService,
+  getResetPasswordWrongPathService,
 };
