@@ -3,7 +3,12 @@ import createHttpError from 'http-errors';
 import User from '../db/models/auth.js';
 import Sessions from '../db/models/sessions.js';
 import { randomBytes } from 'node:crypto';
-import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
+import { THIRTY_MINUTES, ONE_DAY } from '../constants/timesForTokens.js';
+import sendMail from '../utils/sendMail.js';
+import JWT from 'jsonwebtoken';
+import path from 'node:path';
+import fs from 'node:fs';
+import handlebars from 'handlebars';
 
 const registerService = async (userData) => {
   const { name, email, password } = userData;
@@ -33,7 +38,7 @@ const loginService = async (email, password) => {
   //Buradan sonrası token oluşturma işlemi yapılacak
   const accessToken = randomBytes(30).toString('hex');
   const refreshToken = randomBytes(30).toString('hex');
-  const accessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
+  const accessTokenValidUntil = new Date(Date.now() + THIRTY_MINUTES);
   const refreshTokenValidUntil = new Date(Date.now() + ONE_DAY);
 
   const session = await Sessions.findOne({ userID: user._id });
@@ -52,9 +57,7 @@ const loginService = async (email, password) => {
 };
 
 const logoutService = async (sessionID) => {
-  console.log('In Logout Service: Session ID:', sessionID);
   const closedSession = await Sessions.findByIdAndDelete(sessionID);
-  console.log('In Logout Service: Closed Session:', closedSession);
   if (!closedSession) {
     throw createHttpError(401, 'Invalid session ID');
   }
@@ -72,7 +75,7 @@ const refreshService = async (sessionID) => {
   //Buradan sonrası token oluşturma işlemi yapılacak
   const newAccessToken = randomBytes(30).toString('hex');
   const newRefreshToken = randomBytes(30).toString('hex');
-  const newAccessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
+  const newAccessTokenValidUntil = new Date(Date.now() + THIRTY_MINUTES);
   const newRefreshTokenValidUntil = new Date(Date.now() + ONE_DAY);
 
   const oldSession = await Sessions.findOne({ userID: Session.userID });
@@ -89,4 +92,66 @@ const refreshService = async (sessionID) => {
   });
   return newSession;
 };
-export { registerService, loginService, logoutService, refreshService };
+
+const sendResetPasswordEmailService = async (email) => {
+  const userForReset = await User.findOne({ email });
+  if (!userForReset) {
+    throw createHttpError(404, 'User not found');
+  }
+  const resetToken = JWT.sign({ sub: userForReset._id, email: userForReset.email }, process.env.JWT_SECRET, {
+    expiresIn: '15m',
+  });
+
+  // Preparing the reset url
+  const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-pwd?token=${resetToken}`;
+  // Preparing the Handlebars template
+  const TEMPLATE_DIR = path.join(process.cwd(), 'src', 'templates');
+  const TEMPLATE_PATH = path.join(TEMPLATE_DIR, 'reset-mail.html');
+  const template = fs.readFileSync(TEMPLATE_PATH, 'utf8');
+  const compiledTemplate = handlebars.compile(template.toString());
+  const htmlContent = compiledTemplate({ name: userForReset.name, url: resetUrl });
+
+  await sendMail({
+    from: `${process.env.BREVO_SMTP_FROM}`,
+    to: userForReset.email,
+    subject: 'Reset Password',
+    html: htmlContent,
+  });
+
+  return resetToken;
+};
+
+const resetPasswordService = async (token, newPassword) => {
+  let decoded;
+  try {
+    decoded = JWT.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    throw createHttpError(401, 'Invalid token: ' + error.message);
+  }
+  const userToNewPassword = await User.findById(decoded.sub);
+  if (!userToNewPassword) {
+    throw createHttpError(404, 'User not found');
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await User.findByIdAndUpdate(userToNewPassword._id, { password: hashedPassword });
+  return [];
+};
+
+const getResetPasswordWrongPathService = async (token) => {
+  const TEMPLATE_DIR = path.join(process.cwd(), 'src', 'templates');
+  const WRONG_PATH_TEMPLATE_PATH = path.join(TEMPLATE_DIR, 'wrongPath.html');
+  const template = fs.readFileSync(WRONG_PATH_TEMPLATE_PATH, 'utf8');
+  const compiledTemplate = handlebars.compile(template.toString());
+  const htmlContent = compiledTemplate({ token });
+  return htmlContent;
+};
+
+export {
+  registerService,
+  loginService,
+  logoutService,
+  refreshService,
+  sendResetPasswordEmailService,
+  resetPasswordService,
+  getResetPasswordWrongPathService,
+};

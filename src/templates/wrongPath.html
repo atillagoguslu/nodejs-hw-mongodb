@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wrong Path</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+      body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f5f5f5; /* Material Design background color (Grey 100) */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        color: rgba(0, 0, 0, 0.87); /* Material Design primary text color */
+        padding: 16px;
+        box-sizing: border-box;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px; /* Max width for the card */
+      }
+
+      .card {
+        background-color: #ffffff; /* Card background (White) */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+          /* Material Design shadow - dp2 */ 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+        overflow: hidden; /* To ensure header respects border-radius */
+      }
+
+      .card-header {
+        background-color: #d32f2f; /* Material Design error/warning color (Red 700) */
+        color: #ffffff; /* Text on primary color */
+        padding: 24px;
+        text-align: center;
+      }
+
+      .card-header h1 {
+        font-size: 1.75em; /* Adjusted for Material look */
+        font-weight: 500;
+        margin: 0;
+      }
+
+      .card-body {
+        padding: 24px;
+        line-height: 1.6;
+      }
+
+      .card-body p {
+        font-size: 1em; /* Standard paragraph size */
+        margin-bottom: 16px;
+        color: rgba(0, 0, 0, 0.77); /* Slightly lighter for body text */
+      }
+
+      .card-body p:last-child {
+        margin-bottom: 0;
+      }
+
+      .postman-link {
+        color: #1976d2; /* Material Design accent color (Blue 700) */
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .postman-link:hover {
+        text-decoration: underline;
+      }
+
+      .token-display {
+        font-size: 1.1em;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.87);
+        background-color: #eeeeee; /* Light grey background for token area */
+        padding: 12px;
+        border-radius: 4px;
+        margin-top: 20px;
+        word-break: break-all; /* Ensure token wraps */
+      }
+
+      .token-display strong {
+        color: #d32f2f; /* Match header color for emphasis */
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 600px) {
+        .card-header {
+          padding: 20px;
+        }
+        .card-header h1 {
+          font-size: 1.5em;
+        }
+        .card-body {
+          padding: 20px;
+        }
+        .card-body p {
+          font-size: 0.95em;
+        }
+        .token-display {
+          font-size: 1em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="card-header">
+          <h1>Oops!</h1>
+        </div>
+        <div class="card-body">
+          <p>You are at wrong path, the truth lies in <a href="https://getpostman.com" class="postman-link">Postman</a>.</p>
+          <p>Take your token and leave.</p>
+          <div class="token-display">Token: <strong>{{token}}</strong></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

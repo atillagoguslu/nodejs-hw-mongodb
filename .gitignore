@@ -2,7 +2,12 @@
 
 /node_modules
 
+# Environment files
 .env
+.env.*
+*.env
+.envi
+.environment
 
 project-*.md
 
@@ -10,3 +15,6 @@ project-*.md
 .cursor
 .DS_Store
 .idea
+
+temp
+uploads

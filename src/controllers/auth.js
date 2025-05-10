@@ -1,4 +1,12 @@
-import { registerService, loginService, logoutService, refreshService } from '../services/auth.js';
+import {
+  registerService,
+  loginService,
+  logoutService,
+  refreshService,
+  sendResetPasswordEmailService,
+  resetPasswordService,
+  getResetPasswordWrongPathService,
+} from '../services/auth.js';
 import createHttpError from 'http-errors';
 
 const registerController = async (req, res) => {
@@ -39,9 +47,7 @@ const loginController = async (req, res) => {
 
 const logoutController = async (req, res) => {
   const { sessionID } = req.cookies;
-  console.log('In Logout Controller: User ID:', sessionID);
-  const closedSession = await logoutService(sessionID);
-  console.log('In Logout Controller: Session:', closedSession);
+  await logoutService(sessionID);
   res.clearCookie('refreshToken');
   res.clearCookie('sessionID');
   res.status(204).json({
@@ -67,4 +73,48 @@ const refreshController = async (req, res) => {
     data: { accessToken: user.accessToken },
   });
 };
-export { registerController, loginController, logoutController, refreshController };
+
+const sendResetPasswordEmailController = async (req, res) => {
+  const { email } = req.body;
+  const result = await sendResetPasswordEmailService(email);
+  if (!result) {
+    throw createHttpError(500, 'Failed to send reset password email');
+  }
+  res.status(200).json({
+    status: 200,
+    message: 'Reset password email sent successfully',
+    data: result,
+  });
+};
+
+const resetPasswordController = async (req, res) => {
+  const { token, password } = req.body;
+  const result = await resetPasswordService(token, password);
+  if (!result) {
+    throw createHttpError(500, 'Failed to reset password');
+  }
+  res.status(200).json({
+    status: 200,
+    message: 'Password reset successfully',
+    data: result,
+  });
+};
+
+const getResetPasswordWrongPathController = async (req, res) => {
+  const { token } = req.query;
+  const html = await getResetPasswordWrongPathService(token);
+  if (!html) {
+    throw createHttpError(500, 'Failed to get reset password wrong path');
+  }
+  res.send(html);
+};
+
+export {
+  registerController,
+  loginController,
+  logoutController,
+  refreshController,
+  sendResetPasswordEmailController,
+  resetPasswordController,
+  getResetPasswordWrongPathController,
+};

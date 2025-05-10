@@ -23,9 +23,8 @@ const getAllContacts = async (
     filter.contactType = contactType;
   }
 
-  console.log('IN CONTACTS SERVICE filter:', filter);
+
   const contactsQuery = Contact_Model.find(filter);
-  console.log('IN CONTACTS SERVICE contactsQuery:', contactsQuery);
   const [contactsCount, contacts] = await Promise.all([
     Contact_Model.find().merge(contactsQuery).countDocuments(),
     contactsQuery
@@ -34,7 +33,6 @@ const getAllContacts = async (
       .sort({ [sortBy]: sortOrder })
       .exec(),
   ]);
-  console.log('IN CONTACTS SERVICE contactsCount:', contactsCount);
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
 
   if (!contacts) {

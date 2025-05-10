@@ -10,6 +10,9 @@ import createHttpError from 'http-errors';
 import parsePaginationParams from '../utils/parsePaginationParams.js';
 import parseSortParams from '../utils/parseSortParams.js';
 import parseFilterParams from '../utils/parseFilterParams.js';
+import moveUploadFromTemp from '../utils/moveUploadFromTemp.js';
+import moveClaudinaryFromTemp from '../utils/moveClaudinaryFromTemp.js';
+import deleteFromTemp from '../utils/deleteFromTemp.js';
 
 const fetchAllContacts = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -23,7 +26,7 @@ const fetchAllContacts = async (req, res) => {
     message: `Successfully found ${allContacts.contacts.length} contacts!`,
     data: allContacts,
   });
-}; 
+};
 
 const fetchContactById = async (req, res) => {
   const contactID = req.params.contactID;
@@ -41,8 +44,20 @@ const fetchContactById = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
+  const { isFavourite } = req.body;
+  const newIsFavourite = isFavourite === 'true' ? true : false;
   const userId = req.userID; // req.userID is the user ID from the authenticate middleware
-  const contact = await createContactService({ userId, ...req.body });
+  const photo = req.file;
+  let photoPath;
+  if (photo) {
+    if (process.env.UPLOAD_TO_CLOUDINARY === 'true') {
+      photoPath = await moveClaudinaryFromTemp(photo);
+      await deleteFromTemp(photo);
+    } else {
+      photoPath = await moveUploadFromTemp(photo);
+    }
+  }
+  const contact = await createContactService({ ...req.body, isFavourite: newIsFavourite, photo: photoPath, userId: userId });
   res.status(201).send({
     status: 201,
     message: 'Successfully created contact!',
