@@ -11,6 +11,8 @@ import parsePaginationParams from '../utils/parsePaginationParams.js';
 import parseSortParams from '../utils/parseSortParams.js';
 import parseFilterParams from '../utils/parseFilterParams.js';
 import moveUploadFromTemp from '../utils/moveUploadFromTemp.js';
+import moveClaudinaryFromTemp from '../utils/moveClaudinaryFromTemp.js';
+import deleteFromTemp from '../utils/deleteFromTemp.js';
 
 const fetchAllContacts = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -42,22 +44,19 @@ const fetchContactById = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-  const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+  const { isFavourite } = req.body;
   const newIsFavourite = isFavourite === 'true' ? true : false;
   const userId = req.userID; // req.userID is the user ID from the authenticate middleware
   const photo = req.file;
   let photoPath;
   if (photo) {
-    console.log('In createContact Controller: photo:', photo);
-    photoPath = await moveUploadFromTemp(photo);
+    if (process.env.UPLOAD_TO_CLOUDINARY === 'true') {
+      photoPath = await moveClaudinaryFromTemp(photo);
+      await deleteFromTemp(photo);
+    } else {
+      photoPath = await moveUploadFromTemp(photo);
+    }
   }
-
-  console.log('In createContact Controller: name:', name);
-  console.log('In createContact Controller: phoneNumber:', phoneNumber);
-  console.log('In createContact Controller: email:', email);
-  console.log('In createContact Controller: isFavourite:', newIsFavourite);
-  console.log('In createContact Controller: contactType:', contactType);
-  console.log('In createContact Controller: photoPath:', photoPath);
   const contact = await createContactService({ ...req.body, isFavourite: newIsFavourite, photo: photoPath, userId: userId });
   res.status(201).send({
     status: 201,
