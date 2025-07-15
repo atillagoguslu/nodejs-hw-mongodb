@@ -1,7 +1,7 @@
 {
   "name": "nodejs-hw-mongodb",
-  "version": "1.6.0",
-  "description": "Yüklü mü?\r node --version",
+  "version": "1.7.0",
+  "description": "Node.js - MongoDB - Express.js - Handlebars - Cloudinary - JWT - Joi - Bcrypt - Nodemailer - Pino - Prettier - ESLint - Faker.js",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
