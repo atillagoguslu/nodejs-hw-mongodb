@@ -9,7 +9,9 @@
 .envi
 .environment
 
+
 project-*.md
+project.md
 
 .vscode
 .cursor
