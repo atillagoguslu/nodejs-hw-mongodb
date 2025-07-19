@@ -11,6 +11,7 @@
 
 
 project-*.md
+project.mdc
 
 .vscode
 .cursor
