@@ -11,7 +11,7 @@
 
 
 project-*.md
-
+project*.md
 .vscode
 .cursor
 .DS_Store
